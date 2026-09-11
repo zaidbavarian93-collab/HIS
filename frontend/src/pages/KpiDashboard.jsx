@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '../api/client';
-import BarBreakdown from '../components/BarBreakdown';
+import DonutChart from '../components/DonutChart';
 import { formatMoney } from '../utils/format';
 
 function currentMonth() {
@@ -99,27 +99,27 @@ export default function KpiDashboard() {
       <div className="grid-2" style={{ gap: 16 }}>
         <div className="card">
           <div className="section-title">{t('appointments_by_status')}</div>
-          <BarBreakdown data={kpis.appointments.by_status} labels={statusLabels} />
+          <DonutChart data={kpis.appointments.by_status} labels={statusLabels} />
         </div>
         <div className="card">
           <div className="section-title">{t('attendance_today_breakdown')}</div>
-          <BarBreakdown data={kpis.attendance_today} labels={attendanceLabels} />
+          <DonutChart data={kpis.attendance_today} labels={attendanceLabels} />
         </div>
         <div className="card">
           <div className="section-title">{t('inventory_by_category')}</div>
-          <BarBreakdown data={kpis.inventory.by_category} labels={categoryLabels} />
+          <DonutChart data={kpis.inventory.by_category} labels={categoryLabels} />
         </div>
         <div className="card">
           <div className="section-title">{t('staff_by_role')}</div>
-          <BarBreakdown data={kpis.staff.by_role} labels={roleLabels} />
+          <DonutChart data={kpis.staff.by_role} labels={roleLabels} />
         </div>
         <div className="card">
           <div className="section-title">🛡️ {t('insurance_by_type')}</div>
-          <BarBreakdown data={kpis.insurance.by_type} labels={insuranceTypeLabels} />
+          <DonutChart data={kpis.insurance.by_type} labels={insuranceTypeLabels} />
         </div>
         <div className="card">
           <div className="section-title">🛡️ {t('insurance_by_status')}</div>
-          <BarBreakdown data={kpis.insurance.by_status} labels={insuranceStatusLabels} />
+          <DonutChart data={kpis.insurance.by_status} labels={insuranceStatusLabels} />
         </div>
       </div>
 

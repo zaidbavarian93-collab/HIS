@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import AttendanceWidget from '../components/AttendanceWidget';
+import DonutChart from '../components/DonutChart';
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -39,7 +40,22 @@ export default function Dashboard() {
           <div className="stat-value">{lowStockCount}</div>
         </div>
       </div>
-      <AttendanceWidget />
+      <div className="grid-2" style={{ gap: 16 }}>
+        <div className="card">
+          <div className="section-title">{t('appointments_by_status')}</div>
+          <DonutChart
+            data={todayAppointments.reduce((acc, a) => {
+              acc[a.status] = (acc[a.status] || 0) + 1;
+              return acc;
+            }, {})}
+            labels={{
+              booked: t('booked'), checked_in: t('checked_in'), in_progress: t('in_progress'),
+              completed: t('completed'), cancelled: t('cancelled'), no_show: t('no_show'),
+            }}
+          />
+        </div>
+        <AttendanceWidget />
+      </div>
     </div>
   );
 }
