@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import api from '../api/client';
 import { exportStyledExcel } from '../utils/exportUtils';
 import { formatNumber, formatMoney } from '../utils/format';
+import DonutChart from '../components/DonutChart';
 
 function toISODate(d) {
   return d.toISOString().slice(0, 10);
@@ -197,6 +198,42 @@ export default function AdminActivityCenter() {
             <div className="stat-card">
               <div className="stat-label">{t('net_result')}</div>
               <div className="stat-value">{formatMoney(summary.finance.net)}</div>
+            </div>
+          </div>
+
+          <div className="section-title">{t('charts_overview')}</div>
+          <div className="grid-2" style={{ gap: 16, marginBottom: 16 }}>
+            <div className="card">
+              <div className="section-title">{t('attendance_summary')}</div>
+              <DonutChart
+                data={{
+                  full: summary.attendance.on_time_or_full_wage,
+                  half: summary.attendance.half_wage_deduction,
+                  none: summary.attendance.zero_wage,
+                  excused: summary.attendance.excused,
+                }}
+                labels={{ full: t('wage_full'), half: t('wage_half'), none: t('wage_none'), excused: t('excused') }}
+              />
+            </div>
+            <div className="card">
+              <div className="section-title">{t('visitors_list')}</div>
+              <DonutChart
+                data={visits.reduce((acc, v) => {
+                  acc[v.status] = (acc[v.status] || 0) + 1;
+                  return acc;
+                }, {})}
+                labels={visits.reduce((acc, v) => {
+                  acc[v.status] = t(v.status);
+                  return acc;
+                }, {})}
+              />
+            </div>
+            <div className="card">
+              <div className="section-title">{t('total_revenue')} / {t('total_expense')}</div>
+              <DonutChart
+                data={{ revenue: summary.finance.total_revenue, expense: summary.finance.total_expense }}
+                labels={{ revenue: t('total_revenue'), expense: t('total_expense') }}
+              />
             </div>
           </div>
         </>
