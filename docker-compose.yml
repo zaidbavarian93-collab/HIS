@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: hospital_db
+      POSTGRES_USER: hospital_admin
+      POSTGRES_PASSWORD: change_this_password
+    volumes:
+      - hospital_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hospital_admin -d hospital_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      DB_HOST: db
+    volumes:
+      - hospital_backups_data:/app/backups
+      - hospital_uploads_data:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "4000"
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  hospital_db_data:
+  hospital_backups_data:
+  hospital_uploads_data:

@@ -1,0 +1,25 @@
+# تبعيات Node.js (تُثبَّت داخل الحاويات، لا حاجة لتتبّعها هنا)
+node_modules/
+npm-debug.log*
+
+# أسرار البيئة - لا يجوز رفعها إطلاقًا (كلمات مرور قاعدة البيانات، مفتاح JWT)
+backend/.env
+.env
+.env.local
+
+# مخرجات البناء
+frontend/dist/
+frontend/build/
+
+# بيانات محلية قد تُنشأ عند التشغيل خارج Docker
+backend/backups/
+backend/uploads/
+
+# ملفات نظام التشغيل ومحررات الأكواد
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# سجلات
+*.log
