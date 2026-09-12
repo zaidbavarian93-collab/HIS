@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import QRCode from 'qrcode';
@@ -99,6 +99,17 @@ export default function Layout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [contactQr, setContactQr] = useState(null);
+  const [videoMuted, setVideoMuted] = useState(true);
+  const introVideoRef = useRef(null);
+
+  // تفعيل صوت الفيديو التعريفي يتطلب تفاعل مستخدم فعليًا (نقرة) بسبب سياسات التشغيل التلقائي بالمتصفحات
+  function toggleVideoSound() {
+    const video = introVideoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setVideoMuted(video.muted);
+    if (!video.muted) video.play().catch(() => {});
+  }
 
   useEffect(() => {
     QRCode.toDataURL(CONTACT_INFO.join('\n'), { margin: 1, width: 120, color: { dark: '#1e2530', light: '#ffffff' } })
@@ -191,14 +202,25 @@ export default function Layout({ children }) {
         </nav>
 
         <div className="sidebar-footer">
-          <video
-            className="sidebar-footer-video"
-            src="/media/starlight-intro.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-          />
+          <div className="sidebar-footer-video-wrap">
+            <video
+              ref={introVideoRef}
+              className="sidebar-footer-video"
+              src="/media/starlight-intro.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+            <button
+              type="button"
+              className="sidebar-footer-video-sound"
+              onClick={toggleVideoSound}
+              title={videoMuted ? t('sound_on') : t('sound_off')}
+            >
+              {videoMuted ? '🔇' : '🔊'}
+            </button>
+          </div>
           <div className="sidebar-footer-contact">
             <div className="sidebar-footer-company">{CONTACT_INFO[0]}</div>
             <div className="sidebar-footer-line">{CONTACT_INFO[1]}</div>
