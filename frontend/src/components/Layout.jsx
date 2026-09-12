@@ -202,7 +202,7 @@ export default function Layout({ children }) {
         </nav>
 
         <div className="sidebar-footer">
-          <div className="sidebar-footer-video-wrap">
+          <div className="sidebar-footer-video-row">
             <video
               ref={introVideoRef}
               className="sidebar-footer-video"
