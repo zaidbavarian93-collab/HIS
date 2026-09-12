@@ -307,42 +307,23 @@ body {
   gap: 12px;
 }
 
-.sidebar-footer-video-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .sidebar-footer-video {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08);
   display: block;
 }
 
-/* زر دائري بجانب الفيديو (لا فوقه) لتفعيل/كتم صوته الخاص - مستقل عن مؤثرات النظام الصوتية */
-.sidebar-footer-video-sound {
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  padding: 0;
+/* صف سفلي: QR في الجهة اليسرى ومعلومات التواصل في الجهة اليمنى - كما في بطاقة المرجع */
+.sidebar-footer-bottom {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
-}
-
-.sidebar-footer-video-sound:hover {
-  transform: translateY(-1px) scale(1.08);
-  background: rgba(139, 92, 246, 0.25);
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .sidebar-footer-contact {
-  text-align: center;
+  text-align: end;
   font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
 }
 
@@ -350,7 +331,13 @@ body {
   font-weight: 800;
   font-size: 13.5px;
   color: #fff;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.sidebar-footer-label {
+  font-size: 12px;
+  color: #c3c8ee;
+  line-height: 1.6;
 }
 
 .sidebar-footer-line {
@@ -360,15 +347,16 @@ body {
 }
 
 .sidebar-footer-qr-wrap {
+  flex-shrink: 0;
   display: flex;
   justify-content: center;
 }
 
 .sidebar-footer-qr {
-  width: 96px;
-  height: 96px;
+  width: 72px;
+  height: 72px;
   border-radius: 8px;
-  padding: 6px;
+  padding: 5px;
   background: #fff;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
