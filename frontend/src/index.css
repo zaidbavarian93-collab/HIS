@@ -333,8 +333,28 @@ body {
   padding: 20px;
   box-shadow: var(--shadow);
   margin-bottom: 18px;
-  transition: box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   position: relative;
+}
+
+/* بطاقة عادية: ارتفاع خفيف + توهج أزرق ناعم عند المرور - نفس روح بطاقات الإحصائيات لكن أهدأ */
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg), 0 0 24px rgba(99, 102, 241, 0.18);
+  border-color: rgba(99, 102, 241, 0.28);
+}
+
+/* روابط داخل البطاقات أو الجداول (مثل "عرض التفاصيل") - لون أزرق مميز، وتوهج أخضر عند hover */
+.card a:not(.nav-group-toggle, button), td a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.15s ease, text-shadow 0.15s ease;
+}
+
+.card a:not(.nav-group-toggle, button):hover, td a:hover {
+  color: #22c55e;
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.55);
 }
 
 .theme-toggle {
@@ -401,9 +421,22 @@ body {
 }
 
 .stat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-  border-color: rgba(99, 102, 241, 0.3);
+  transform: translateY(-5px) scale(1.015);
+  box-shadow: var(--shadow-lg), 0 0 34px rgba(99, 102, 241, 0.4);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.stat-card:hover .stat-value {
+  text-shadow: 0 0 18px rgba(99, 102, 241, 0.6);
+}
+
+.stat-card.warn:hover {
+  box-shadow: var(--shadow-lg), 0 0 34px rgba(239, 68, 68, 0.35);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.stat-card.warn:hover .stat-value {
+  text-shadow: 0 0 18px rgba(239, 68, 68, 0.55);
 }
 
 .stat-card .stat-label {
@@ -485,8 +518,20 @@ th {
   top: 0;
 }
 
-tbody tr { transition: background 0.15s ease; }
-tbody tr:hover { background: var(--primary-light); }
+tbody tr {
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: inset 3px 0 0 0 transparent;
+}
+
+/* حد جانبي متوهج + تظليل أوضح عند المرور فوق أي صف جدول */
+tbody tr:hover {
+  background: var(--primary-light);
+  box-shadow: inset 3px 0 0 0 var(--primary), 0 0 16px rgba(99, 102, 241, 0.15);
+}
+
+html[dir="ltr"] tbody tr:hover {
+  box-shadow: inset -3px 0 0 0 var(--primary), 0 0 16px rgba(99, 102, 241, 0.15);
+}
 
 button {
   background: var(--primary-gradient);
@@ -503,7 +548,13 @@ button {
   box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
 }
 
-button:hover { filter: brightness(1.08); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.42); background-position: 100% 50%; transform: translateY(-1px); }
+/* هالة توهج مزدوجة (أزرق + أخضر) وارتفاع أوضح للزر الأساسي عند hover */
+button:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 8px 22px rgba(99, 102, 241, 0.45), 0 0 26px rgba(34, 211, 238, 0.3), 0 0 14px rgba(16, 185, 129, 0.25);
+  background-position: 100% 50%;
+  transform: translateY(-2px);
+}
 button:active { transform: scale(0.98) translateY(0); }
 
 button.secondary {
@@ -512,7 +563,14 @@ button.secondary {
   box-shadow: 0 1px 2px rgba(16, 19, 34, 0.04), inset 0 0 0 1px var(--border);
 }
 
-button.secondary:hover { background: var(--primary-light); filter: none; box-shadow: 0 1px 2px rgba(16, 19, 34, 0.04), inset 0 0 0 1px rgba(99, 102, 241, 0.35); color: var(--primary-dark); transform: translateY(-1px); }
+/* توهج مخصص للزر الثانوي - أزرق-بنفسجي هادئ بدل الأخضر/الأزرق للزر الأساسي */
+button.secondary:hover {
+  background: var(--primary-light);
+  filter: none;
+  box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.4), 0 6px 18px rgba(99, 102, 241, 0.3), 0 0 20px rgba(139, 92, 246, 0.25);
+  color: var(--primary-dark);
+  transform: translateY(-2px);
+}
 
 button.danger {
   background: var(--danger-bg);
@@ -520,7 +578,13 @@ button.danger {
   box-shadow: none;
 }
 
-button.danger:hover { background: #fecaca; filter: none; box-shadow: 0 4px 14px rgba(185, 28, 28, 0.2); }
+/* توهج مخصص لزر الخطر - أحمر/برتقالي بدل النمط الأزرق-الأخضر العام */
+button.danger:hover {
+  background: #fecaca;
+  filter: none;
+  box-shadow: 0 6px 18px rgba(185, 28, 28, 0.3), 0 0 22px rgba(239, 68, 68, 0.4);
+  transform: translateY(-2px);
+}
 
 button:disabled { opacity: 0.5; cursor: not-allowed; filter: none; box-shadow: none; transform: none; }
 
@@ -608,6 +672,26 @@ label {
   border-radius: 20px;
   font-size: 12px;
   font-weight: 700;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  cursor: default;
+}
+
+/* نبضة توهج بلون الحالة نفسه عند hover (أخضر/أحمر/أصفر) */
+@keyframes badge-pulse-success { 0%, 100% { box-shadow: 0 0 0 0 rgba(21, 128, 61, 0.45); } 50% { box-shadow: 0 0 0 6px rgba(21, 128, 61, 0); } }
+@keyframes badge-pulse-warn { 0%, 100% { box-shadow: 0 0 0 0 rgba(180, 120, 10, 0.45); } 50% { box-shadow: 0 0 0 6px rgba(180, 120, 10, 0); } }
+@keyframes badge-pulse-danger { 0%, 100% { box-shadow: 0 0 0 0 rgba(185, 28, 28, 0.45); } 50% { box-shadow: 0 0 0 6px rgba(185, 28, 28, 0); } }
+
+.badge.paid:hover, .badge.completed:hover, .badge.active:hover {
+  animation: badge-pulse-success 1s ease-in-out infinite;
+  transform: scale(1.06);
+}
+.badge.unpaid:hover, .badge.booked:hover, .badge.low-stock:hover, .badge.installment:hover, .badge.overdue:hover {
+  animation: badge-pulse-warn 1s ease-in-out infinite;
+  transform: scale(1.06);
+}
+.badge.cancelled:hover, .badge.inactive:hover, .badge.out-of-stock:hover {
+  animation: badge-pulse-danger 1s ease-in-out infinite;
+  transform: scale(1.06);
 }
 
 .badge::before {
