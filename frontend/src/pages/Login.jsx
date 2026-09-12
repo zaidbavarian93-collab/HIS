@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useSound } from '../context/SoundContext';
 import { playSuccess, playError } from '../utils/sounds';
+
+// أقصى مدة انتظار لنهاية الفيديو الترحيبي قبل المتابعة قسرًا (احتياطًا إن لم يُطلَق حدث "ended")
+const WELCOME_FALLBACK_MS = 14000;
+const FADE_OUT_MS = 600;
 
 export default function Login() {
   const { t } = useTranslation();
@@ -15,6 +19,17 @@ export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [fadingOut, setFadingOut] = useState(false);
+  const welcomeVideoRef = useRef(null);
+  const finishedRef = useRef(false);
+
+  function finishWelcome() {
+    if (finishedRef.current) return;
+    finishedRef.current = true;
+    setFadingOut(true);
+    setTimeout(() => navigate('/'), FADE_OUT_MS);
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -22,11 +37,30 @@ export default function Login() {
     try {
       await login(username, password);
       playSuccess();
-      navigate('/');
+      setShowWelcome(true);
+      setTimeout(finishWelcome, WELCOME_FALLBACK_MS);
     } catch (err) {
       playError();
       setError(t('invalid_credentials'));
     }
+  }
+
+  if (showWelcome) {
+    return (
+      <div className={`welcome-splash${fadingOut ? ' fade-out' : ''}`}>
+        <video
+          ref={welcomeVideoRef}
+          className="welcome-splash-video"
+          src="/media/starlight-intro.mp4"
+          autoPlay
+          playsInline
+          onEnded={finishWelcome}
+        />
+        <button type="button" className="secondary welcome-splash-skip" onClick={finishWelcome}>
+          {t('skip')} ←
+        </button>
+      </div>
+    );
   }
 
   return (
