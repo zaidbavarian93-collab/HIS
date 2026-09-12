@@ -51,6 +51,9 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 // لأن عناصر <img> لا ترسل ترويسة Authorization - يبقى الرفع/الحذف نفسه محميًا بصلاحية admin
 app.use('/api/uploads/department-logos', express.static(path.join(__dirname, '..', 'uploads', 'department-logos')));
 
+// نفس المنطق لصور الكادر الشخصية: عرض عام بدون JWT، الرفع/الحذف محمي بصلاحية admin
+app.use('/api/uploads/staff-photos', express.static(path.join(__dirname, '..', 'uploads', 'staff-photos')));
+
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/departments', departmentRoutes);

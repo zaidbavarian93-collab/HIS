@@ -91,6 +91,8 @@ User.init(
     // اسم ملف الشهادة المرفوع (يُخزَّن فعليًا في مجلد uploads على الخادم)
     certificate_file: { type: DataTypes.STRING, allowNull: true },
     certificate_original_name: { type: DataTypes.STRING, allowNull: true },
+    // الصورة الشخصية (اختياري) - تُعرض في بطاقة الطبيب/الموظف بدل الأيقونة الافتراضية
+    photo_file: { type: DataTypes.STRING, allowNull: true },
     notes: { type: DataTypes.TEXT, allowNull: true },
   },
   {

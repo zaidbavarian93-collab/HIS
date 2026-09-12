@@ -6,6 +6,8 @@ const { Department } = require('../models');
 const { authenticate, authorize, requireDepartmentHead } = require('../middleware/auth');
 const { logAudit } = require('../services/auditLog');
 const { upload, CERT_DIR } = require('../middleware/upload');
+const { uploadStaffPhoto, PHOTO_DIR } = require('../middleware/staffPhotoUpload');
+const fs = require('fs');
 
 const router = express.Router();
 
@@ -13,7 +15,7 @@ const PUBLIC_ATTRIBUTES = [
   'id', 'full_name', 'username', 'role', 'department_id', 'is_active', 'base_salary',
   'date_of_birth', 'gender', 'phone', 'email', 'qualification', 'job_grade',
   'marital_status', 'external_affiliation', 'certificate_file', 'certificate_original_name', 'notes',
-  'is_department_head',
+  'is_department_head', 'photo_file',
 ];
 
 // GET /api/users/doctors - قائمة مختصرة بالأطباء (متاحة للاستقبال أيضًا لأغراض حجز المواعيد)
@@ -179,6 +181,33 @@ router.delete('/:id', async (req, res) => {
     }
     res.status(400).json({ message: 'تعذّر حذف الموظف' });
   }
+});
+
+// POST /api/users/:id/photo - رفع/استبدال الصورة الشخصية
+router.post('/:id/photo', uploadStaffPhoto.single('photo'), async (req, res) => {
+  const user = await User.findByPk(req.params.id);
+  if (!user) return res.status(404).json({ message: 'المستخدم غير موجود' });
+  if (!req.file) return res.status(400).json({ message: 'لم يتم إرفاق ملف' });
+
+  if (user.photo_file) {
+    fs.unlink(path.join(PHOTO_DIR, user.photo_file), () => {});
+  }
+  user.photo_file = req.file.filename;
+  await user.save();
+  res.status(201).json({ photo_file: user.photo_file });
+});
+
+// DELETE /api/users/:id/photo - إزالة الصورة الشخصية
+router.delete('/:id/photo', async (req, res) => {
+  const user = await User.findByPk(req.params.id);
+  if (!user) return res.status(404).json({ message: 'المستخدم غير موجود' });
+
+  if (user.photo_file) {
+    fs.unlink(path.join(PHOTO_DIR, user.photo_file), () => {});
+  }
+  user.photo_file = null;
+  await user.save();
+  res.json({ message: 'تمت إزالة الصورة' });
 });
 
 // POST /api/users/:id/certificate - رفع ملف الشهادة (PDF أو صورة)

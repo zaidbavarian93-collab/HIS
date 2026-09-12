@@ -692,6 +692,12 @@ label {
   object-fit: cover;
 }
 
+/* صورة شخصية دائرية (بطاقات الأطباء) بدل الشعار المربّع للأقسام */
+.dept-tile-icon.round,
+.dept-logo-preview.round {
+  border-radius: 50%;
+}
+
 .dept-tile-name {
   font-size: 16px;
   font-weight: 800;
