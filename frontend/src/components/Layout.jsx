@@ -3,6 +3,9 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import QRCode from 'qrcode';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { useSound } from '../context/SoundContext';
+import { setLanguage } from '../i18n';
 import UserMenu from './UserMenu';
 
 // معلومات التواصل الخاصة بشركة ستارلايت - تُعرض أسفل السايد بار وتُحوَّل إلى QR كود
@@ -90,8 +93,10 @@ function groupContainsPath(group, pathname) {
 }
 
 export default function Layout({ children }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+  const { muted, toggleMuted } = useSound();
   const location = useLocation();
   const [contactQr, setContactQr] = useState(null);
   const [videoMuted, setVideoMuted] = useState(true);
@@ -226,8 +231,36 @@ export default function Layout({ children }) {
       </aside>
       <div className="main-content">
         <div className="topbar">
-          <div />
-          <UserMenu />
+          <div className="topbar-welcome">
+            {t('welcome')}, {t(`role_${user?.role}`)} - {user?.full_name}
+          </div>
+          <div className="topbar-controls">
+            <UserMenu />
+            <select
+              value={i18n.language}
+              onChange={(e) => setLanguage(e.target.value)}
+              style={{ width: 110, marginBottom: 0 }}
+            >
+              <option value="ar">العربية</option>
+              <option value="en">English</option>
+            </select>
+            <button
+              type="button"
+              className="secondary theme-toggle sound-toggle"
+              onClick={toggleMuted}
+              title={muted ? t('sound_on') : t('sound_off')}
+            >
+              {muted ? '🔇' : '🔊'}
+            </button>
+            <button
+              type="button"
+              className="secondary theme-toggle"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? t('light_mode') : t('dark_mode')}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+          </div>
         </div>
         {children}
       </div>

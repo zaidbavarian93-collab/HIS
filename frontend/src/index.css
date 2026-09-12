@@ -402,6 +402,19 @@ body {
   color: var(--text);
 }
 
+.topbar-welcome {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.topbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 /* ===== قائمة المستخدم المنسدلة (أعلى كل صفحة) ===== */
 
 .user-menu {
@@ -536,6 +549,12 @@ body {
 .settings-row-desc {
   font-size: 12.5px;
   margin-top: 2px;
+}
+
+.settings-row-user {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--primary);
 }
 
 .card {

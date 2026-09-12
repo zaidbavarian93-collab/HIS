@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useSound } from '../context/SoundContext';
 import { setLanguage } from '../i18n';
@@ -6,6 +7,7 @@ import { setLanguage } from '../i18n';
 // صفحة الإعدادات الموحّدة: الوضع الليلي/الفاتح، المؤثرات الصوتية، ولغة الواجهة في مكان واحد
 export default function Settings() {
   const { t, i18n } = useTranslation();
+  const { user } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { muted, toggleMuted } = useSound();
 
@@ -16,6 +18,10 @@ export default function Settings() {
       </div>
 
       <div className="card" style={{ maxWidth: 520 }}>
+        <div className="settings-row">
+          <div className="settings-row-user">{t(`role_${user?.role}`)} - {user?.full_name}</div>
+        </div>
+
         <div className="settings-row">
           <div>
             <div className="settings-row-title">{t('dark_mode')} / {t('light_mode')}</div>
@@ -30,9 +36,11 @@ export default function Settings() {
 
         <div className="settings-row">
           <div>
-            <div className="settings-row-title">{t('sound_on')} / {t('sound_off')}</div>
+            <div className="settings-row-title">
+              {t('sound_effects')} {muted ? t('sound_status_off') : t('sound_status_on')}
+            </div>
             <div className="settings-row-desc muted">
-              {muted ? t('sound_off') : t('sound_on')}
+              {muted ? t('sound_status_off') : t('sound_status_on')}
             </div>
           </div>
           <button type="button" className="secondary theme-toggle sound-toggle" onClick={toggleMuted}>
