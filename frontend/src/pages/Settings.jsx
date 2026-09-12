@@ -17,7 +17,7 @@ export default function Settings() {
         <h2>{t('settings')}</h2>
       </div>
 
-      <div className="card" style={{ maxWidth: 520 }}>
+      <div className="card">
         <div className="settings-row">
           <div className="settings-row-user">{t(`role_${user?.role}`)} - {user?.full_name}</div>
         </div>
