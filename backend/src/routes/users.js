@@ -115,6 +115,78 @@ router.post(
   }
 );
 
+// POST /api/users/bulk-import - استيراد جماعي للكادر من ملف Excel (يُحلَّل في الواجهة الأمامية، هنا فقط الإنشاء)
+// body: { staff: [{ full_name, username?, password?, role, base_salary?, ... }] }
+router.post('/bulk-import', async (req, res) => {
+  const rows = Array.isArray(req.body.staff) ? req.body.staff : [];
+  if (rows.length === 0) {
+    return res.status(400).json({ message: 'لا توجد بيانات صالحة للاستيراد' });
+  }
+
+  const results = [];
+  for (let i = 0; i < rows.length; i += 1) {
+    const rowNumber = i + 2; // بافتراض وجود صف عناوين في الملف الأصلي (الصف 1)
+    const raw = rows[i];
+    try {
+      if (!raw.full_name || !String(raw.full_name).trim()) {
+        throw new Error('الاسم الكامل مطلوب');
+      }
+      if (!raw.role || !ROLES.includes(raw.role)) {
+        throw new Error(`دور غير صالح: "${raw.role || ''}"`);
+      }
+
+      const data = sanitizeStaffInput(raw);
+      const username = data.username && String(data.username).trim()
+        ? String(data.username).trim()
+        : `${String(data.full_name).trim().replace(/\s+/g, '.').toLowerCase()}.${Date.now().toString().slice(-5)}${i}`;
+      const generatedPassword = !data.password || !String(data.password).trim();
+      const password = generatedPassword
+        ? Math.random().toString(36).slice(-10)
+        : String(data.password).trim();
+
+      const user = await User.create({
+        full_name: String(data.full_name).trim(),
+        username,
+        password_hash: password,
+        role: data.role,
+        department_id: data.department_id || null,
+        base_salary: data.base_salary || 0,
+        date_of_birth: data.date_of_birth,
+        gender: data.gender,
+        phone: data.phone,
+        email: data.email,
+        qualification: data.qualification,
+        job_grade: data.job_grade,
+        marital_status: data.marital_status,
+        external_affiliation: data.external_affiliation,
+        notes: data.notes,
+      });
+
+      await logAudit({
+        req, action: 'create', entityType: 'User', entityId: user.id,
+        description: `استيراد موظف من ملف Excel: ${user.full_name} (${user.username}) - الدور: ${user.role}`,
+        after: { full_name: user.full_name, username: user.username, role: user.role },
+      });
+
+      results.push({
+        row: rowNumber, success: true, full_name: user.full_name, username: user.username,
+        generated_password: generatedPassword ? password : undefined,
+      });
+    } catch (err) {
+      const message = err.name === 'SequelizeUniqueConstraintError'
+        ? 'اسم المستخدم موجود مسبقًا'
+        : (err.message || 'حدث خطأ غير متوقع');
+      results.push({ row: rowNumber, success: false, full_name: raw.full_name, message });
+    }
+  }
+
+  res.status(201).json({
+    created: results.filter((r) => r.success).length,
+    failed: results.filter((r) => !r.success).length,
+    results,
+  });
+});
+
 // PUT /api/users/:id - تعديل بيانات موظف (شخصية ومهنية، تفعيل/تعطيل، دور، راتب)
 router.put('/:id', async (req, res) => {
   const user = await User.findByPk(req.params.id);
