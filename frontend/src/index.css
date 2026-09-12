@@ -314,17 +314,24 @@ body {
   display: block;
 }
 
-/* صف سفلي: QR في الجهة اليسرى ومعلومات التواصل في الجهة اليمنى - كما في بطاقة المرجع */
+/* صف سفلي: QR في الجهة اليسرى ومعلومات التواصل في الجهة اليمنى دائمًا - كما في بطاقة المرجع
+   (اتجاه ثابت LTR هنا كي لا يتأثر ترتيب العنصرين بتبديل لغة الواجهة عربي/إنجليزي) */
 .sidebar-footer-bottom {
   display: flex;
+  direction: ltr;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
 .sidebar-footer-contact {
-  text-align: end;
+  order: 2;
+  text-align: right;
   font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+
+.sidebar-footer-qr-wrap {
+  order: 1;
 }
 
 .sidebar-footer-company {
