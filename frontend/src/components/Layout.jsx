@@ -13,7 +13,7 @@ const CONTACT_INFO = [
   'شركة ستارلايت للحلول التقنية',
   'للتواصل:',
   'واتساب:009647824980164',
-  'انستغرام:ZKS.93',
+  'انستغرام: zks.93',
 ];
 
 // القائمة الجانبية مقسّمة إلى فئات واضحة، كل فئة لها عنوان وفاصل
@@ -198,8 +198,8 @@ export default function Layout({ children }) {
             <div className="sidebar-footer-contact">
               <div className="sidebar-footer-company">{CONTACT_INFO[0]}</div>
               <div className="sidebar-footer-label">{CONTACT_INFO[1]}</div>
-              <div className="sidebar-footer-line">📱 {CONTACT_INFO[2]}</div>
-              <div className="sidebar-footer-line">📷 {CONTACT_INFO[3]}</div>
+              <div className="sidebar-footer-line">💬{CONTACT_INFO[2]}</div>
+              <div className="sidebar-footer-line">📷{CONTACT_INFO[3]}</div>
             </div>
             {contactQr && (
               <div className="sidebar-footer-qr-wrap">
