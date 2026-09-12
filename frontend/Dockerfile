@@ -7,5 +7,10 @@ RUN npm run build
 
 FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# قالب بدل ملف ثابت: nginx يستبدل ${PORT} و${BACKEND_URL} تلقائيًا عند الإقلاع (envsubst)
+# هذا يسمح بالعمل محليًا عبر docker-compose (القيم الافتراضية) وعلى استضافة سحابية
+# مثل Railway (التي تحقن PORT الخاص بها ورابط خدمة الـ backend الفعلي) بدون أي تعديل إضافي
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+ENV PORT=80
+ENV BACKEND_URL=http://backend:4000
 EXPOSE 80
