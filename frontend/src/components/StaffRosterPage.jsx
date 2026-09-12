@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import api from '../api/client';
 import { printHtml, exportToWord, exportToExcel } from '../utils/exportUtils';
 import { formatMoney as fmt } from '../utils/format';
+import StaffForm from './StaffForm';
 
 function currentMonth() {
   const d = new Date();
@@ -18,16 +19,34 @@ function calcAge(dob) {
 
 // صفحة الكادر البشري الموحّدة - تُستخدم من قسمي "الموارد البشرية" و"الحسابات" معًا
 // النسخة المالية (includeFinancials) تضيف عمود الشهر وأعمدة الرواتب/الاستقطاعات لتصدير Excel فقط
-export default function StaffRosterPage({ titleKey, includeFinancials }) {
+export default function StaffRosterPage({ titleKey, includeFinancials, editable }) {
   const { t } = useTranslation();
   const [staff, setStaff] = useState([]);
   const [month, setMonth] = useState(currentMonth());
   const [payrollByUser, setPayrollByUser] = useState({});
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [showForm, setShowForm] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
 
   async function loadStaff() {
     const { data } = await api.get('/users');
     setStaff(data);
+  }
+
+  function handleSaved() {
+    setShowForm(false);
+    setEditingUser(null);
+    loadStaff();
+  }
+
+  async function deleteStaff(u) {
+    if (!window.confirm(`${t('confirm_delete_staff')} — ${u.full_name}`)) return;
+    try {
+      await api.delete(`/users/${u.id}`);
+      loadStaff();
+    } catch (err) {
+      window.alert(err.response?.data?.message || t('save_failed'));
+    }
   }
 
   async function loadPayroll() {
@@ -159,8 +178,20 @@ export default function StaffRosterPage({ titleKey, includeFinancials }) {
           <button className="secondary" onClick={doPrint}>🖨️ {t('print')}</button>
           <button className="secondary" onClick={doExportWord}>📄 {t('export_word')}</button>
           <button onClick={doExportExcel}>📊 {t('export_excel')}</button>
+          {editable && (
+            <button onClick={() => { setEditingUser(null); setShowForm(!showForm); }}>
+              + {t('add_staff')}
+            </button>
+          )}
         </div>
       </div>
+
+      {editable && showForm && !editingUser && (
+        <StaffForm onSaved={handleSaved} onCancel={() => setShowForm(false)} />
+      )}
+      {editable && editingUser && (
+        <StaffForm existingUser={editingUser} onSaved={handleSaved} onCancel={() => setEditingUser(null)} />
+      )}
 
       <div className="stat-grid">
         <div className="stat-card">
@@ -203,6 +234,7 @@ export default function StaffRosterPage({ titleKey, includeFinancials }) {
               {includeFinancials && <th>{t('base_salary')}</th>}
               {includeFinancials && <th>{t('net_salary')}</th>}
               <th>{t('status')}</th>
+              {editable && <th></th>}
             </tr>
           </thead>
           <tbody>
@@ -221,11 +253,17 @@ export default function StaffRosterPage({ titleKey, includeFinancials }) {
                   {includeFinancials && <td>{fmt(d.base_salary)}</td>}
                   {includeFinancials && <td style={{ fontWeight: 700 }}>{fmt(d.net_salary)}</td>}
                   <td><span className={`badge ${u.is_active ? 'active' : 'inactive'}`}>{d.status}</span></td>
+                  {editable && (
+                    <td style={{ display: 'flex', gap: 6 }}>
+                      <button className="secondary" onClick={() => { setShowForm(false); setEditingUser(u); }}>{t('edit')}</button>
+                      <button className="secondary" onClick={() => deleteStaff(u)}>{t('delete')}</button>
+                    </td>
+                  )}
                 </tr>
               );
             })}
             {filtered.length === 0 && (
-              <tr><td colSpan={includeFinancials ? 11 : 9} className="muted">{t('no_data')}</td></tr>
+              <tr><td colSpan={includeFinancials ? (editable ? 12 : 11) : (editable ? 10 : 9)} className="muted">{t('no_data')}</td></tr>
             )}
           </tbody>
         </table>

@@ -157,6 +157,30 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// DELETE /api/users/:id - حذف موظف نهائيًا (يُفضَّل التعطيل بدل الحذف إن كان له سجلات مرتبطة)
+router.delete('/:id', async (req, res) => {
+  const user = await User.findByPk(req.params.id);
+  if (!user) return res.status(404).json({ message: 'المستخدم غير موجود' });
+  if (user.id === req.user.id) {
+    return res.status(400).json({ message: 'لا يمكنك حذف حسابك الخاص' });
+  }
+
+  try {
+    await user.destroy();
+    await logAudit({
+      req, action: 'delete', entityType: 'User', entityId: user.id,
+      description: `حذف موظف: ${user.full_name} (${user.username}) - الدور: ${user.role}`,
+      before: { full_name: user.full_name, username: user.username, role: user.role },
+    });
+    res.json({ message: 'تم حذف الموظف' });
+  } catch (err) {
+    if (err.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(409).json({ message: 'لا يمكن حذف هذا الموظف لوجود سجلات مرتبطة به (حضور/رواتب/مواعيد) - يمكنك تعطيل حسابه بدلًا من الحذف' });
+    }
+    res.status(400).json({ message: 'تعذّر حذف الموظف' });
+  }
+});
+
 // POST /api/users/:id/certificate - رفع ملف الشهادة (PDF أو صورة)
 router.post('/:id/certificate', upload.single('certificate'), async (req, res) => {
   const user = await User.findByPk(req.params.id);
