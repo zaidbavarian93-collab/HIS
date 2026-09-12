@@ -13,9 +13,6 @@ import Pharmacy from './pages/Pharmacy';
 import Warehouse from './pages/Warehouse';
 import Departments from './pages/Departments';
 import Doctors from './pages/Doctors';
-import DentalPharmacyStaff from './pages/DentalPharmacyStaff';
-import Technicians from './pages/Technicians';
-import AdminGeneralStaff from './pages/AdminGeneralStaff';
 import Payroll from './pages/Payroll';
 import Attendance from './pages/Attendance';
 import Backups from './pages/Backups';
@@ -56,9 +53,6 @@ function AppRoutes() {
       <Route path="/warehouse" element={<PrivateRoute><Warehouse /></PrivateRoute>} />
       <Route path="/departments" element={<PrivateRoute><Departments /></PrivateRoute>} />
       <Route path="/doctors" element={<PrivateRoute><Doctors /></PrivateRoute>} />
-      <Route path="/dental-pharmacy-staff" element={<PrivateRoute><DentalPharmacyStaff /></PrivateRoute>} />
-      <Route path="/technicians" element={<PrivateRoute><Technicians /></PrivateRoute>} />
-      <Route path="/admin-general-staff" element={<PrivateRoute><AdminGeneralStaff /></PrivateRoute>} />
       <Route path="/payroll" element={<PrivateRoute><Payroll /></PrivateRoute>} />
       <Route path="/attendance" element={<PrivateRoute><Attendance /></PrivateRoute>} />
       <Route path="/backups" element={<PrivateRoute><Backups /></PrivateRoute>} />

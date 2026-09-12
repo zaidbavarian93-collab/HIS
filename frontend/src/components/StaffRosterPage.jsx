@@ -49,6 +49,18 @@ export default function StaffRosterPage({ titleKey, includeFinancials, editable 
     }
   }
 
+  async function downloadCertificate(u) {
+    const res = await api.get(`/users/${u.id}/certificate`, { responseType: 'blob' });
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', u.certificate_original_name || 'certificate');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  }
+
   async function loadPayroll() {
     if (!includeFinancials) return;
     const { data } = await api.get('/payroll', { params: { month } });
@@ -234,6 +246,7 @@ export default function StaffRosterPage({ titleKey, includeFinancials, editable 
               {includeFinancials && <th>{t('base_salary')}</th>}
               {includeFinancials && <th>{t('net_salary')}</th>}
               <th>{t('status')}</th>
+              {editable && <th>{t('certificate_upload')}</th>}
               {editable && <th></th>}
             </tr>
           </thead>
@@ -254,6 +267,15 @@ export default function StaffRosterPage({ titleKey, includeFinancials, editable 
                   {includeFinancials && <td style={{ fontWeight: 700 }}>{fmt(d.net_salary)}</td>}
                   <td><span className={`badge ${u.is_active ? 'active' : 'inactive'}`}>{d.status}</span></td>
                   {editable && (
+                    <td>
+                      {u.certificate_file ? (
+                        <button className="secondary" onClick={() => downloadCertificate(u)}>⬇️ {t('download')}</button>
+                      ) : (
+                        <span className="muted">{t('no_certificate')}</span>
+                      )}
+                    </td>
+                  )}
+                  {editable && (
                     <td style={{ display: 'flex', gap: 6 }}>
                       <button className="secondary" onClick={() => { setShowForm(false); setEditingUser(u); }}>{t('edit')}</button>
                       <button className="secondary" onClick={() => deleteStaff(u)}>{t('delete')}</button>
@@ -263,7 +285,7 @@ export default function StaffRosterPage({ titleKey, includeFinancials, editable 
               );
             })}
             {filtered.length === 0 && (
-              <tr><td colSpan={includeFinancials ? (editable ? 12 : 11) : (editable ? 10 : 9)} className="muted">{t('no_data')}</td></tr>
+              <tr><td colSpan={includeFinancials ? (editable ? 13 : 11) : (editable ? 11 : 9)} className="muted">{t('no_data')}</td></tr>
             )}
           </tbody>
         </table>

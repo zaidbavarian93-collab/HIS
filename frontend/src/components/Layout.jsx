@@ -54,21 +54,12 @@ const NAV_GROUPS = [
     ],
   },
   {
-    // الشؤون الإدارية (الموارد البشرية) - قسم مستقل منفصل عن الشؤون المالية: حضور وكادر
+    // الموارد البشرية - قسم موحّد: حضور، الكادر البشري بكل فئاته (إضافة/تعديل/حذف)، وأطباء مع ربطهم بالأقسام
     key: 'hr',
     items: [
       { to: '/attendance', label: 'attendance_management', icon: '🕒', roles: ['admin', 'billing'] },
       { to: '/staff-roster', label: 'staff_roster', icon: '📋', roles: ['admin', 'billing'] },
-    ],
-  },
-  {
-    // 4 صفحات مستقلة، كل واحدة بفئتها الوظيفية الخاصة بها فقط
-    key: 'staff_categories',
-    items: [
       { to: '/doctors', label: 'doctors', icon: '🩺', roles: ['admin'] },
-      { to: '/dental-pharmacy-staff', label: 'dental_pharmacy_staff', icon: '🦷', roles: ['admin'] },
-      { to: '/technicians', label: 'technicians_staff', icon: '🔬', roles: ['admin'] },
-      { to: '/admin-general-staff', label: 'admin_general_staff', icon: '🗂️', roles: ['admin'] },
     ],
   },
   {
