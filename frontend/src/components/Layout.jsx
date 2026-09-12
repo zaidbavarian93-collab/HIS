@@ -1,10 +1,19 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import QRCode from 'qrcode';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useSound } from '../context/SoundContext';
 import { setLanguage } from '../i18n';
+
+// معلومات التواصل الخاصة بشركة ستارلايت - تُعرض أسفل السايد بار وتُحوَّل إلى QR كود
+const CONTACT_INFO = [
+  'شركة ستارلايت للحلول التقنية',
+  'للتواصل:',
+  'واتساب: 009647824980164',
+  'انستغرام: zks.93',
+];
 
 // القائمة الجانبية مقسّمة إلى فئات واضحة، كل فئة لها عنوان وفاصل
 const NAV_GROUPS = [
@@ -89,6 +98,13 @@ export default function Layout({ children }) {
   const { muted, toggleMuted } = useSound();
   const navigate = useNavigate();
   const location = useLocation();
+  const [contactQr, setContactQr] = useState(null);
+
+  useEffect(() => {
+    QRCode.toDataURL(CONTACT_INFO.join('\n'), { margin: 1, width: 120, color: { dark: '#1e2530', light: '#ffffff' } })
+      .then(setContactQr)
+      .catch(() => {});
+  }, []);
 
   // القائمة الجانبية بشكل درج: كل قسم رئيسي مطوي افتراضيًا، ويُفتح تلقائيًا القسم الذي يحتوي الصفحة الحالية
   const [openGroups, setOpenGroups] = useState(() => {
@@ -173,6 +189,28 @@ export default function Layout({ children }) {
             );
           })}
         </nav>
+
+        <div className="sidebar-footer">
+          <video
+            className="sidebar-footer-video"
+            src="/media/starlight-intro.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+          <div className="sidebar-footer-contact">
+            <div className="sidebar-footer-company">{CONTACT_INFO[0]}</div>
+            <div className="sidebar-footer-line">{CONTACT_INFO[1]}</div>
+            <div className="sidebar-footer-line">📱 {CONTACT_INFO[2]}</div>
+            <div className="sidebar-footer-line">📷 {CONTACT_INFO[3]}</div>
+          </div>
+          {contactQr && (
+            <div className="sidebar-footer-qr-wrap">
+              <img className="sidebar-footer-qr" src={contactQr} alt="QR - معلومات التواصل" />
+            </div>
+          )}
+        </div>
       </aside>
       <div className="main-content">
         <div className="topbar">

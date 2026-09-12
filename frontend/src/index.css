@@ -297,6 +297,56 @@ body {
   box-shadow: 0 0 12px rgba(34, 211, 238, 0.8);
 }
 
+/* ===== تذييل السايد بار: فيديو تعريفي + معلومات تواصل الشركة + QR ===== */
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar-footer-video {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  display: block;
+}
+
+.sidebar-footer-contact {
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+
+.sidebar-footer-company {
+  font-weight: 800;
+  font-size: 13.5px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.sidebar-footer-line {
+  font-size: 12px;
+  color: #c3c8ee;
+  line-height: 1.6;
+}
+
+.sidebar-footer-qr-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar-footer-qr {
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+  padding: 6px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
 /* ===== المحتوى الرئيسي ===== */
 
 .main-content {
