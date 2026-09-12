@@ -78,7 +78,7 @@ export default function KpiDashboard() {
           <div className="stat-label">{t('total_inventory_value')}</div>
           <div className="stat-value">{formatMoney(kpis.inventory.total_value)}</div>
         </div>
-        <div className="stat-card">
+        <div className="stat-card wide">
           <div className="stat-label">{t('payroll_net_month')}</div>
           <div className="stat-value">{formatMoney(kpis.payroll.total_net)}</div>
         </div>
