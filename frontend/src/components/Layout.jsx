@@ -5,6 +5,7 @@ import QRCode from 'qrcode';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useSound } from '../context/SoundContext';
+import { setLanguage } from '../i18n';
 import UserMenu from './UserMenu';
 
 // معلومات التواصل الخاصة بشركة ستارلايت - تُعرض أسفل السايد بار وتُحوَّل إلى QR كود
@@ -92,7 +93,7 @@ function groupContainsPath(group, pathname) {
 }
 
 export default function Layout({ children }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { muted, toggleMuted } = useSound();
@@ -235,6 +236,14 @@ export default function Layout({ children }) {
           </div>
           <div className="topbar-controls">
             <UserMenu />
+            <select
+              value={i18n.language}
+              onChange={(e) => setLanguage(e.target.value)}
+              style={{ width: 110, marginBottom: 0 }}
+            >
+              <option value="ar">العربية</option>
+              <option value="en">English</option>
+            </select>
             <button
               type="button"
               className="secondary theme-toggle sound-toggle"
