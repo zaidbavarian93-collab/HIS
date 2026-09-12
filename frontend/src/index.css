@@ -34,7 +34,7 @@ html[data-theme='dark'] {
   --bg: #080a14;
   --surface: #12162a;
   --surface-2: #161b33;
-  --border: #262d47;
+  --border: rgba(255, 255, 255, 0.22);
   --text: #e7e9f5;
   --text-muted: #9aa1c4;
   --primary-light: rgba(99, 102, 241, 0.16);
@@ -440,8 +440,8 @@ body {
 }
 
 .user-menu-avatar {
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: var(--primary-gradient);
   color: #fff;
@@ -449,8 +449,9 @@ body {
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 17px;
   flex-shrink: 0;
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--primary);
 }
 
 .user-menu-info {
