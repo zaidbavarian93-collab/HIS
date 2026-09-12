@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useSound } from '../context/SoundContext';
 import { setLanguage } from '../i18n';
 
 // القائمة الجانبية مقسّمة إلى فئات واضحة، كل فئة لها عنوان وفاصل
@@ -85,6 +86,7 @@ export default function Layout({ children }) {
   const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { muted, toggleMuted } = useSound();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -178,6 +180,14 @@ export default function Layout({ children }) {
             {t('welcome')}, {user?.full_name} ({user?.role})
           </div>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            <button
+              type="button"
+              className="secondary theme-toggle sound-toggle"
+              onClick={toggleMuted}
+              title={muted ? t('sound_on') : t('sound_off')}
+            >
+              {muted ? '🔇' : '🔊'}
+            </button>
             <button
               type="button"
               className="secondary theme-toggle"

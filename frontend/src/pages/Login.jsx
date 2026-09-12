@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useSound } from '../context/SoundContext';
+import { playSuccess, playError } from '../utils/sounds';
 
 export default function Login() {
   const { t } = useTranslation();
   const { login } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { muted, toggleMuted } = useSound();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -18,22 +21,36 @@ export default function Login() {
     setError('');
     try {
       await login(username, password);
+      playSuccess();
       navigate('/');
     } catch (err) {
+      playError();
       setError(t('invalid_credentials'));
     }
   }
 
   return (
     <div className="login-page">
-      <button
-        type="button"
-        className="secondary theme-toggle login-theme-toggle"
-        onClick={toggleTheme}
-        title={theme === 'dark' ? t('light_mode') : t('dark_mode')}
-      >
-        {theme === 'dark' ? '☀️' : '🌙'}
-      </button>
+      <div style={{ position: 'absolute', top: 20, insetInlineEnd: 20, display: 'flex', gap: 8 }}>
+        <button
+          type="button"
+          className="secondary theme-toggle sound-toggle login-theme-toggle"
+          onClick={toggleMuted}
+          title={muted ? t('sound_on') : t('sound_off')}
+          style={{ position: 'static' }}
+        >
+          {muted ? '🔇' : '🔊'}
+        </button>
+        <button
+          type="button"
+          className="secondary theme-toggle login-theme-toggle"
+          onClick={toggleTheme}
+          title={theme === 'dark' ? t('light_mode') : t('dark_mode')}
+          style={{ position: 'static' }}
+        >
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
+      </div>
       <form className="login-box" onSubmit={handleSubmit}>
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <div

@@ -49,6 +49,8 @@
   "more_health_details_hint": "Full health record details (chronic diseases, disabilities, insurance...) can be added from the patient profile page after registration",
   "dark_mode": "Dark Mode",
   "light_mode": "Light Mode",
+  "sound_on": "Enable Sound Effects",
+  "sound_off": "Mute Sound Effects",
   "backups": "Backups",
   "run_backup_now": "Backup Now",
   "backing_up": "Backing up...",
