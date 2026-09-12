@@ -36,6 +36,7 @@ export default function DonutChart({ data, labels = {}, size = 160, thickness = 
           {segments.map((seg) => (
             <circle
               key={seg.key}
+              className="donut-segment"
               cx={size / 2}
               cy={size / 2}
               r={radius}
@@ -45,8 +46,10 @@ export default function DonutChart({ data, labels = {}, size = 160, thickness = 
               strokeDasharray={seg.dashArray}
               strokeDashoffset={seg.dashOffset}
               strokeLinecap="butt"
-              style={{ transition: 'stroke-dasharray 0.4s ease' }}
-            />
+              style={{ transition: 'stroke-dasharray 0.4s ease, stroke-width 0.15s ease, opacity 0.15s ease' }}
+            >
+              <title>{`${labels[seg.key] || seg.key}: ${seg.value} (${seg.pct}%)`}</title>
+            </circle>
           ))}
         </g>
         <text x="50%" y="48%" textAnchor="middle" fontSize={size * 0.16} fontWeight="700" fill="var(--text)">
@@ -58,7 +61,12 @@ export default function DonutChart({ data, labels = {}, size = 160, thickness = 
       </svg>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 120 }}>
         {segments.map((seg) => (
-          <div key={seg.key} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5 }}>
+          <div
+            key={seg.key}
+            className="donut-legend-row"
+            title={`${labels[seg.key] || seg.key}: ${seg.value} (${seg.pct}%)`}
+            style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5 }}
+          >
             <span style={{ width: 10, height: 10, borderRadius: 3, background: seg.color, flexShrink: 0 }} />
             <span style={{ flex: 1 }}>{labels[seg.key] || seg.key}</span>
             <span className="muted">{seg.value} ({seg.pct}%)</span>

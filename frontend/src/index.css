@@ -421,6 +421,25 @@ body {
   letter-spacing: -0.02em;
 }
 
+/* مخطط الدونات - تكبير خفيف للقطعة عند مرور الفأرة فوقها (مع ظهور التلميح الأصلي عبر <title>) */
+.donut-segment {
+  cursor: pointer;
+}
+.donut-segment:hover {
+  filter: brightness(1.25) drop-shadow(0 0 6px currentColor);
+}
+
+.donut-legend-row {
+  cursor: default;
+  border-radius: 6px;
+  padding: 3px 6px;
+  margin: -3px -6px;
+  transition: background 0.15s ease;
+}
+.donut-legend-row:hover {
+  background: rgba(99, 102, 241, 0.12);
+}
+
 .stat-card.warn::before { background: linear-gradient(90deg, #f59e0b, #ef4444); }
 .stat-card.warn .stat-value { color: var(--warn-text); }
 
