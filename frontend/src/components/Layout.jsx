@@ -141,7 +141,8 @@ export default function Layout({ children }) {
   }
 
   return (
-    <div className="app-layout">
+    <div className="page-shell">
+      <div className="app-layout">
       <aside className="sidebar">
         <div className="brand">
           <span className="logo-dot" />
@@ -202,25 +203,6 @@ export default function Layout({ children }) {
         </nav>
 
         <div className="sidebar-footer">
-          <div className="sidebar-footer-video-row">
-            <video
-              ref={introVideoRef}
-              className="sidebar-footer-video"
-              src="/media/starlight-intro.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-            />
-            <button
-              type="button"
-              className="sidebar-footer-video-sound"
-              onClick={toggleVideoSound}
-              title={videoMuted ? t('sound_on') : t('sound_off')}
-            >
-              {videoMuted ? '🔇' : '🔊'}
-            </button>
-          </div>
           <div className="sidebar-footer-contact">
             <div className="sidebar-footer-company">{CONTACT_INFO[0]}</div>
             <div className="sidebar-footer-line">{CONTACT_INFO[1]}</div>
@@ -271,6 +253,29 @@ export default function Layout({ children }) {
         </div>
         {children}
       </div>
+    </div>
+
+      <footer className="page-video-footer">
+        <div className="page-video-footer-inner">
+          <video
+            ref={introVideoRef}
+            className="page-video-footer-video"
+            src="/media/starlight-intro.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+          <button
+            type="button"
+            className="page-video-footer-sound"
+            onClick={toggleVideoSound}
+            title={videoMuted ? t('sound_on') : t('sound_off')}
+          >
+            {videoMuted ? '🔇' : '🔊'}
+          </button>
+        </div>
+      </footer>
     </div>
   );
 }
