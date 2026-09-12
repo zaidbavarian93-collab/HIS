@@ -143,6 +143,8 @@
   "username": "اسم المستخدم",
   "password": "كلمة المرور",
   "logout": "تسجيل الخروج",
+  "settings": "الإعدادات",
+  "language": "لغة الواجهة",
   "dashboard": "الرئيسية",
   "patients": "المرضى",
   "appointments": "المواعيد",

@@ -32,6 +32,7 @@ import InsurerPortalPage from './pages/InsurerPortalPage';
 import AuditLogs from './pages/AuditLogs';
 import NotificationsCenter from './pages/NotificationsCenter';
 import Installments from './pages/Installments';
+import Settings from './pages/Settings';
 
 function PrivateRoute({ children }) {
   const { user } = useAuth();
@@ -72,6 +73,7 @@ function AppRoutes() {
       <Route path="/notifications-center" element={<PrivateRoute><NotificationsCenter /></PrivateRoute>} />
       <Route path="/installments" element={<PrivateRoute><Installments /></PrivateRoute>} />
       <Route path="/users" element={<PrivateRoute><Users /></PrivateRoute>} />
+      <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

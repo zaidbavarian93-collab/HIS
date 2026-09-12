@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import QRCode from 'qrcode';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
-import { useSound } from '../context/SoundContext';
-import { setLanguage } from '../i18n';
+import UserMenu from './UserMenu';
 
 // معلومات التواصل الخاصة بشركة ستارلايت - تُعرض أسفل السايد بار وتُحوَّل إلى QR كود
 const CONTACT_INFO = [
@@ -92,11 +90,8 @@ function groupContainsPath(group, pathname) {
 }
 
 export default function Layout({ children }) {
-  const { t, i18n } = useTranslation();
-  const { user, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
-  const { muted, toggleMuted } = useSound();
-  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { user } = useAuth();
   const location = useLocation();
   const [contactQr, setContactQr] = useState(null);
   const [videoMuted, setVideoMuted] = useState(true);
@@ -133,11 +128,6 @@ export default function Layout({ children }) {
 
   function toggleGroup(key) {
     setOpenGroups((prev) => ({ ...prev, [key]: !prev[key] }));
-  }
-
-  function handleLogout() {
-    logout();
-    navigate('/login');
   }
 
   return (
@@ -236,38 +226,8 @@ export default function Layout({ children }) {
       </aside>
       <div className="main-content">
         <div className="topbar">
-          <div>
-            {t('welcome')}, {user?.full_name} ({user?.role})
-          </div>
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-            <button
-              type="button"
-              className="secondary theme-toggle sound-toggle"
-              onClick={toggleMuted}
-              title={muted ? t('sound_on') : t('sound_off')}
-            >
-              {muted ? '🔇' : '🔊'}
-            </button>
-            <button
-              type="button"
-              className="secondary theme-toggle"
-              onClick={toggleTheme}
-              title={theme === 'dark' ? t('light_mode') : t('dark_mode')}
-            >
-              {theme === 'dark' ? '☀️' : '🌙'}
-            </button>
-            <select
-              value={i18n.language}
-              onChange={(e) => setLanguage(e.target.value)}
-              style={{ width: 90, marginBottom: 0 }}
-            >
-              <option value="ar">العربية</option>
-              <option value="en">English</option>
-            </select>
-            <button className="secondary" onClick={handleLogout}>
-              {t('logout')}
-            </button>
-          </div>
+          <div />
+          <UserMenu />
         </div>
         {children}
       </div>
