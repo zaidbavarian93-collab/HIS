@@ -55,7 +55,7 @@ export default function DonutChart({ data, labels = {}, size = 160, thickness = 
         <text x="50%" y="48%" textAnchor="middle" fontSize={size * 0.16} fontWeight="700" fill="var(--text)">
           {total}
         </text>
-        <text x="50%" y="64%" textAnchor="middle" fontSize={size * 0.08} fill="var(--muted)">
+        <text x="50%" y="64%" textAnchor="middle" fontSize={size * 0.08} fill="var(--text-muted)">
           الإجمالي
         </text>
       </svg>
