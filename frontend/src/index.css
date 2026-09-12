@@ -186,7 +186,7 @@ body {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #8991c9;
+  color: #e2e5ff;
   padding: 8px 12px 11px;
 }
 
@@ -207,13 +207,13 @@ body {
 
 .nav-group-toggle:hover {
   background: rgba(255, 255, 255, 0.06);
-  color: #9aa3d4;
+  color: #ffffff;
   filter: none;
   box-shadow: none;
 }
 
 .nav-group-toggle.open {
-  color: #8b93c9;
+  color: #ffffff;
 }
 
 .nav-group-chevron {
