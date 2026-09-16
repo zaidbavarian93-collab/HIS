@@ -100,6 +100,7 @@ export default function Layout({ children }) {
   const { muted, toggleMuted } = useSound();
   const location = useLocation();
   const [contactQr, setContactQr] = useState(null);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   useEffect(() => {
     QRCode.toDataURL(CONTACT_INFO.join('\n'), { margin: 1, width: 120, color: { dark: '#1e2530', light: '#ffffff' } })
@@ -125,9 +126,23 @@ export default function Layout({ children }) {
     setOpenGroups((prev) => ({ ...prev, [key]: !prev[key] }));
   }
 
+  // إغلاق القائمة الجانبية (وضع الهاتف) تلقائيًا عند الانتقال لصفحة أخرى
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [location.pathname]);
+
   return (
     <div className="app-layout">
-      <aside className="sidebar">
+      <button
+        type="button"
+        className="mobile-nav-toggle"
+        onClick={() => setMobileNavOpen((v) => !v)}
+        aria-label="menu"
+      >
+        ☰
+      </button>
+      {mobileNavOpen && <div className="mobile-nav-backdrop" onClick={() => setMobileNavOpen(false)} />}
+      <aside className={`sidebar${mobileNavOpen ? ' open' : ''}`}>
         <div className="brand">
           <span className="logo-dot" />
           <div>
@@ -172,7 +187,7 @@ export default function Layout({ children }) {
                       <div key={section.titleKey || idx} className={idx > 0 ? 'nav-subgroup' : undefined}>
                         {section.titleKey && <div className="nav-subgroup-title">{t(section.titleKey)}</div>}
                         {section.items.map((item) => (
-                          <NavLink key={item.to} to={item.to} end={item.to === '/'}>
+                          <NavLink key={item.to} to={item.to} end={item.to === '/'} onClick={() => setMobileNavOpen(false)}>
                             <span className="nav-icon">{item.icon}</span>
                             {t(item.label)}
                           </NavLink>
