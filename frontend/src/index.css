@@ -766,7 +766,8 @@ body {
 .donut-segment {
   cursor: pointer;
 }
-.donut-segment:hover {
+.donut-segment:hover,
+.donut-segment.highlighted {
   filter: brightness(1.35) drop-shadow(0 0 10px currentColor) drop-shadow(0 0 18px currentColor);
 }
 
@@ -777,7 +778,8 @@ body {
   margin: -3px -6px;
   transition: background 0.15s ease;
 }
-.donut-legend-row:hover {
+.donut-legend-row:hover,
+.donut-legend-row.highlighted {
   background: rgba(99, 102, 241, 0.12);
 }
 

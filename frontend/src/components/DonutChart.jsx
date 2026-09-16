@@ -7,6 +7,7 @@ const PALETTE = ['#6366f1', '#22d3ee', '#a855f7', '#f59e0b', '#f43f5e', '#10b981
 export default function DonutChart({ data, labels = {}, size = 160, thickness = 22 }) {
   const wrapRef = useRef(null);
   const [tooltip, setTooltip] = useState(null); // { x, y, text }
+  const [highlighted, setHighlighted] = useState(null); // مفتاح القطعة المُضاءة حاليًا (من القطعة نفسها أو صف المفتاح)
 
   const entries = Object.entries(data || {}).filter(([, v]) => v > 0);
   const total = entries.reduce((sum, [, v]) => sum + v, 0);
@@ -62,7 +63,7 @@ export default function DonutChart({ data, labels = {}, size = 160, thickness = 
           {segments.map((seg) => (
             <circle
               key={seg.key}
-              className="donut-segment"
+              className={`donut-segment${highlighted === seg.key ? ' highlighted' : ''}`}
               cx={size / 2}
               cy={size / 2}
               r={radius}
@@ -72,10 +73,10 @@ export default function DonutChart({ data, labels = {}, size = 160, thickness = 
               strokeDasharray={seg.dashArray}
               strokeDashoffset={seg.dashOffset}
               strokeLinecap="butt"
-              style={{ transition: 'stroke-dasharray 0.4s ease, stroke-width 0.15s ease, opacity 0.15s ease' }}
-              onMouseEnter={(e) => showTooltip(e, seg)}
+              style={{ color: seg.color, transition: 'stroke-dasharray 0.4s ease, stroke-width 0.15s ease, opacity 0.15s ease' }}
+              onMouseEnter={(e) => { showTooltip(e, seg); setHighlighted(seg.key); }}
               onMouseMove={moveTooltip}
-              onMouseLeave={hideTooltip}
+              onMouseLeave={() => { hideTooltip(); setHighlighted(null); }}
             />
           ))}
         </g>
@@ -90,11 +91,11 @@ export default function DonutChart({ data, labels = {}, size = 160, thickness = 
         {segments.map((seg) => (
           <div
             key={seg.key}
-            className="donut-legend-row"
+            className={`donut-legend-row${highlighted === seg.key ? ' highlighted' : ''}`}
             style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5 }}
-            onMouseEnter={(e) => showTooltip(e, seg)}
+            onMouseEnter={(e) => { showTooltip(e, seg); setHighlighted(seg.key); }}
             onMouseMove={moveTooltip}
-            onMouseLeave={hideTooltip}
+            onMouseLeave={() => { hideTooltip(); setHighlighted(null); }}
           >
             <span style={{ width: 10, height: 10, borderRadius: 3, background: seg.color, flexShrink: 0 }} />
             <span style={{ flex: 1 }}>{labels[seg.key] || seg.key}</span>
