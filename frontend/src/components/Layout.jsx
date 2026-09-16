@@ -41,6 +41,7 @@ const NAV_GROUPS = [
     items: [
       { to: '/patients', label: 'patients', icon: '🧑‍🤝‍🧑', roles: ['admin', 'reception', 'doctor', 'nurse', 'billing'] },
       { to: '/appointments', label: 'appointments', icon: '📅', roles: ['admin', 'reception', 'doctor', 'nurse'] },
+      { to: '/queue', label: 'waiting_queue', icon: '🎫', roles: ['admin', 'reception', 'doctor', 'nurse'] },
       { to: '/departments', label: 'departments', icon: '🏥', roles: ['admin', 'billing'] },
     ],
   },

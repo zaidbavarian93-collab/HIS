@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Patients from './pages/Patients';
 import PatientProfile from './pages/PatientProfile';
 import Appointments from './pages/Appointments';
+import Queue from './pages/Queue';
 import Billing from './pages/Billing';
 import Users from './pages/Users';
 import Pharmacy from './pages/Pharmacy';
@@ -50,6 +51,7 @@ function AppRoutes() {
       <Route path="/patients" element={<PrivateRoute><Patients /></PrivateRoute>} />
       <Route path="/patients/:id" element={<PrivateRoute><PatientProfile /></PrivateRoute>} />
       <Route path="/appointments" element={<PrivateRoute><Appointments /></PrivateRoute>} />
+      <Route path="/queue" element={<PrivateRoute><Queue /></PrivateRoute>} />
       <Route path="/billing" element={<PrivateRoute><Billing /></PrivateRoute>} />
       <Route path="/pharmacy" element={<PrivateRoute><Pharmacy /></PrivateRoute>} />
       <Route path="/warehouse" element={<PrivateRoute><Warehouse /></PrivateRoute>} />

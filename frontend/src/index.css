@@ -1043,6 +1043,161 @@ label {
   position: relative;
 }
 
+/* ===== طابور الانتظار - لوحة "قيد الكشف الآن" + تذاكر دائرية مرقّمة أشبه بشاشات العيادات ===== */
+
+.queue-now-serving-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.queue-now-card {
+  background: linear-gradient(160deg, var(--surface-2) 0%, var(--surface) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.queue-now-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--primary-gradient);
+}
+
+.queue-now-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.queue-now-number {
+  font-size: 56px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 6px 0;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 30px rgba(99, 102, 241, 0.35);
+}
+
+.queue-now-patient {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.queue-now-meta {
+  color: var(--text-muted);
+  font-size: 12.5px;
+  margin-top: 2px;
+}
+
+.queue-now-actions {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.queue-tickets-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* تذكرة دائرية بالرقم - أشبه بتذكرة طابور فعلية، مع توهج بنفسجي هادئ */
+.queue-ticket {
+  width: 148px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 10px 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.queue-ticket:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+.queue-ticket-number {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 8px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+.queue-ticket-name {
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queue-ticket-meta {
+  color: var(--text-muted);
+  font-size: 11.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.queue-ticket-wait {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.queue-ticket-actions {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.queue-ticket-actions button {
+  padding: 6px 9px;
+  font-size: 12px;
+}
+
+/* الحالة العاجلة: توهج أحمر نابض يتقدّم بصريًا على بقية التذاكر */
+.queue-ticket.urgent {
+  border-color: rgba(239, 68, 68, 0.5);
+  animation: queue-urgent-pulse 1.6s ease-in-out infinite;
+}
+
+.queue-ticket.urgent .queue-ticket-number {
+  background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.18);
+}
+
+@keyframes queue-urgent-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.35); }
+  50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+}
+
 .dept-tile-top::before {
   content: '';
   position: absolute;

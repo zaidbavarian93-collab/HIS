@@ -66,6 +66,7 @@ router.post(
 );
 
 // PUT /api/appointments/:id/status - تحديث حالة الموعد (وصل، قيد الكشف، انتهى، إلخ)
+// عند الانتقال إلى checked_in لأول مرة: يُولَّد رقم تذكرة تسلسلي لهذا القسم/اليوم وينضم المريض لطابور الانتظار
 router.put('/:id/status', authorize('admin', 'reception', 'doctor', 'nurse'), async (req, res) => {
   const { status } = req.body;
   const appointment = await Appointment.findByPk(req.params.id);
@@ -74,9 +75,80 @@ router.put('/:id/status', authorize('admin', 'reception', 'doctor', 'nurse'), as
     return res.status(403).json({ message: 'لا يمكنك التعديل على موعد خارج قسمك' });
   }
 
+  if (status === 'checked_in' && !appointment.queue_number) {
+    const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999);
+    const lastInQueue = await Appointment.max('queue_number', {
+      where: {
+        department_id: appointment.department_id,
+        checked_in_at: { [Op.between]: [todayStart, todayEnd] },
+      },
+    });
+    appointment.queue_number = (lastInQueue || 0) + 1;
+    appointment.checked_in_at = new Date();
+  }
+
   appointment.status = status;
   await appointment.save();
   res.json(appointment);
+});
+
+// PUT /api/appointments/:id/priority - تمييز حالة كعاجلة لتتقدّم في طابور الانتظار (أو إعادتها لعادية)
+router.put('/:id/priority', authorize('admin', 'reception', 'doctor', 'nurse'), async (req, res) => {
+  const { priority } = req.body;
+  if (!['normal', 'urgent'].includes(priority)) {
+    return res.status(400).json({ message: 'أولوية غير صالحة' });
+  }
+  const appointment = await Appointment.findByPk(req.params.id);
+  if (!appointment) return res.status(404).json({ message: 'الموعد غير موجود' });
+  if (!HOSPITAL_WIDE_ROLES.includes(req.user.role) && appointment.department_id !== req.user.department_id) {
+    return res.status(403).json({ message: 'لا يمكنك التعديل على موعد خارج قسمك' });
+  }
+
+  appointment.priority = priority;
+  await appointment.save();
+  res.json(appointment);
+});
+
+// GET /api/appointments/queue/board - لوحة طابور الانتظار الحية لليوم الحالي
+// ترتيب الطابور: العاجل أولًا، ثم حسب رقم التذكرة تصاعديًا - ويُعاد "قيد الكشف" و"قائمة الانتظار" منفصلين لكل قسم
+router.get('/queue/board', async (req, res) => {
+  const { department_id } = req.query;
+  const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
+  const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999);
+
+  const where = {
+    status: { [Op.in]: ['checked_in', 'in_progress'] },
+    checked_in_at: { [Op.between]: [todayStart, todayEnd] },
+  };
+  if (department_id) where.department_id = department_id;
+  if (!HOSPITAL_WIDE_ROLES.includes(req.user.role)) {
+    where.department_id = req.user.department_id || null;
+  }
+
+  const entries = await Appointment.findAll({
+    where,
+    include: [
+      { model: Patient, attributes: ['id', 'full_name', 'file_number', 'phone'] },
+      { model: User, as: 'doctor', attributes: ['id', 'full_name'] },
+      { model: Department, attributes: ['id', 'name_ar', 'name_en'] },
+    ],
+    order: [
+      ['priority', 'DESC'], // urgent > normal أبجديًا بالصدفة، لكن نضمن الترتيب الصريح بالأسفل
+      ['queue_number', 'ASC'],
+    ],
+  });
+
+  // فرز صريح إضافي كي لا نعتمد على الترتيب الأبجدي للـ ENUM في قاعدة البيانات
+  entries.sort((a, b) => {
+    if (a.priority !== b.priority) return a.priority === 'urgent' ? -1 : 1;
+    return (a.queue_number || 0) - (b.queue_number || 0);
+  });
+
+  res.json({
+    nowServing: entries.filter((e) => e.status === 'in_progress'),
+    waiting: entries.filter((e) => e.status === 'checked_in'),
+  });
 });
 
 module.exports = router;

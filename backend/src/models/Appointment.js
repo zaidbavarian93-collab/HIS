@@ -29,6 +29,18 @@ Appointment.init(
     },
     notes: { type: DataTypes.STRING, allowNull: true },
     created_by: { type: DataTypes.UUID, allowNull: true }, // المستخدم اللي حجز الموعد
+
+    // ===== طابور الانتظار =====
+    // رقم التذكرة داخل طابور القسم لهذا اليوم - يُولَّد تلقائيًا عند تسجيل وصول المريض (checked_in)
+    queue_number: { type: DataTypes.INTEGER, allowNull: true },
+    // وقت تسجيل الوصول الفعلي - يُستخدم لحساب مدة الانتظار المعروضة في لوحة الطابور
+    checked_in_at: { type: DataTypes.DATE, allowNull: true },
+    // urgent: حالة عاجلة تتقدّم على البقية في الطابور بغض النظر عن رقم التذكرة
+    priority: {
+      type: DataTypes.ENUM('normal', 'urgent'),
+      allowNull: false,
+      defaultValue: 'normal',
+    },
   },
   {
     sequelize,
