@@ -4,6 +4,7 @@ import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { formatNumber } from '../utils/format';
 import { exportStyledExcel } from '../utils/exportUtils';
+import DonutChart from '../components/DonutChart';
 
 const TYPE_ICON = { outpatient: '🏥', inpatient: '🛏️', service: '🧰' };
 
@@ -151,6 +152,18 @@ export default function Departments() {
           </div>
           <button type="submit">{t('save')}</button>
         </form>
+      )}
+
+      {departments.length > 0 && (
+        <div className="card" style={{ marginBottom: 20 }}>
+          <div className="section-title">📊 {t('visitors_count')} — {t('departments')}</div>
+          <DonutChart
+            data={Object.fromEntries(departments.map((d) => [d.id, d.visits_count || 0]))}
+            labels={Object.fromEntries(departments.map((d) => [d.id, d.name_ar]))}
+            size={190}
+            thickness={26}
+          />
+        </div>
       )}
 
       <div className="dept-grid">

@@ -1,7 +1,13 @@
+import { useRef, useState } from 'react';
+
 const PALETTE = ['#6366f1', '#22d3ee', '#a855f7', '#f59e0b', '#f43f5e', '#10b981', '#3b82f6', '#eab308'];
 
 // مخطط دائري (Donut) مبني بـ SVG بدون أي مكتبة خارجية، مع مفتاح ألوان (Legend) وقيمة إجمالية في المركز
+// عند تمرير الفأرة فوق أي قطعة أو صف بالمفتاح: توهج للقطعة + نافذة معلومات صغيرة تتبع الفأرة
 export default function DonutChart({ data, labels = {}, size = 160, thickness = 22 }) {
+  const wrapRef = useRef(null);
+  const [tooltip, setTooltip] = useState(null); // { x, y, text }
+
   const entries = Object.entries(data || {}).filter(([, v]) => v > 0);
   const total = entries.reduce((sum, [, v]) => sum + v, 0);
 
@@ -28,8 +34,28 @@ export default function DonutChart({ data, labels = {}, size = 160, thickness = 
     return seg;
   });
 
+  function showTooltip(e, seg) {
+    const wrapRect = wrapRef.current.getBoundingClientRect();
+    setTooltip({
+      x: e.clientX - wrapRect.left,
+      y: e.clientY - wrapRect.top,
+      text: `${labels[seg.key] || seg.key}`,
+      value: `${seg.value} (${seg.pct}%)`,
+      color: seg.color,
+    });
+  }
+
+  function moveTooltip(e) {
+    const wrapRect = wrapRef.current.getBoundingClientRect();
+    setTooltip((prev) => (prev ? { ...prev, x: e.clientX - wrapRect.left, y: e.clientY - wrapRect.top } : prev));
+  }
+
+  function hideTooltip() {
+    setTooltip(null);
+  }
+
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+    <div ref={wrapRef} style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ flexShrink: 0 }}>
         <g transform={`rotate(-90 ${size / 2} ${size / 2})`}>
           <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="var(--border)" strokeWidth={thickness} />
@@ -47,9 +73,10 @@ export default function DonutChart({ data, labels = {}, size = 160, thickness = 
               strokeDashoffset={seg.dashOffset}
               strokeLinecap="butt"
               style={{ transition: 'stroke-dasharray 0.4s ease, stroke-width 0.15s ease, opacity 0.15s ease' }}
-            >
-              <title>{`${labels[seg.key] || seg.key}: ${seg.value} (${seg.pct}%)`}</title>
-            </circle>
+              onMouseEnter={(e) => showTooltip(e, seg)}
+              onMouseMove={moveTooltip}
+              onMouseLeave={hideTooltip}
+            />
           ))}
         </g>
         <text x="50%" y="48%" textAnchor="middle" fontSize={size * 0.16} fontWeight="700" fill="var(--text)">
@@ -64,8 +91,10 @@ export default function DonutChart({ data, labels = {}, size = 160, thickness = 
           <div
             key={seg.key}
             className="donut-legend-row"
-            title={`${labels[seg.key] || seg.key}: ${seg.value} (${seg.pct}%)`}
             style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5 }}
+            onMouseEnter={(e) => showTooltip(e, seg)}
+            onMouseMove={moveTooltip}
+            onMouseLeave={hideTooltip}
           >
             <span style={{ width: 10, height: 10, borderRadius: 3, background: seg.color, flexShrink: 0 }} />
             <span style={{ flex: 1 }}>{labels[seg.key] || seg.key}</span>
@@ -73,6 +102,17 @@ export default function DonutChart({ data, labels = {}, size = 160, thickness = 
           </div>
         ))}
       </div>
+
+      {tooltip && (
+        <div
+          className="donut-tooltip"
+          style={{ left: tooltip.x, top: tooltip.y, borderInlineStartColor: tooltip.color }}
+        >
+          <span className="donut-tooltip-dot" style={{ background: tooltip.color }} />
+          <span className="donut-tooltip-label">{tooltip.text}</span>
+          <span className="donut-tooltip-value">{tooltip.value}</span>
+        </div>
+      )}
     </div>
   );
 }
