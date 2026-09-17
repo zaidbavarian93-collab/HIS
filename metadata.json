@@ -1,0 +1,6 @@
+{
+  "name": "Hospital System",
+  "description": "Hospital Information System (HIS) with patients, appointments, medical records, billing, pharmacy, and department management",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
